@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  SCANNER
+}
+
+enum AttendanceType {
+  ENTRADA
+  SALIDA
+}
+
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  role         Role
+  tokenVersion Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Employee {
+  id             String    @id @default(cuid())
+  fullName       String
+  position       String
+  contact        String
+  rfc            String?
+  photoPath      String?
+  scheduledStart DateTime? @db.Time(0)
+  scheduledEnd   DateTime? @db.Time(0)
+  qrToken        String    @unique
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  attendances Attendance[]
+}
+
+model Attendance {
+  id         String         @id @default(cuid())
+  employeeId String
+  employee   Employee       @relation(fields: [employeeId], references: [id])
+  type       AttendanceType
+  timestamp  DateTime       @default(now()) @db.Timestamptz(3)
+
+  @@index([employeeId, timestamp])
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,15 @@
+node_modules
+dist
+# Keep environment variables out of version control
+.env
+
+/generated
+/uploads
+
+# Prisma CLI agent-skill docs cache (auto-downloaded tooling, not project code)
+/.agents
+/.claude
+/.windsurf
+/.cursor
+/.codeium
+skills-lock.json
